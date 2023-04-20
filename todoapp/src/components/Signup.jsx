@@ -13,17 +13,31 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';                        
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../store/slices/AuthActions';
-import { Navigate,Link } from 'react-router-dom';
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Navigate,Link, useNavigate } from 'react-router-dom';
+import { useFormik} from 'formik';
 import * as Yup from "yup";
+import { FormHelperText, InputLabel, ListItemText, MenuItem, Select } from '@mui/material';
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required("firstName is required"),
   lastName: Yup.string().required("lastName is required"),
   email: Yup.string().email("Invalid email address").required("Email is required"),
   password: Yup.string().required("Password is required"),
-
+  terms: Yup.boolean()
+  .oneOf([true], 'Please accept the terms and conditions')
+  .required('Please accept the terms and conditions'),
+  interest: Yup.array()
+  .of(Yup.string().required('Interest is required'))
+  .min(1, 'At least one Interest is required')
 });
+
+
+const names = [
+  'Playing Music',
+  'Watching Videos',
+  'Playing Sports',
+  'Entertainment'
+];
 
 const theme = createTheme();
 
@@ -32,18 +46,43 @@ export const Signup =() =>{
     firstName: "",
     lastName:"",
     email: "",
-    password: ""
+    password: "",
+    terms:false,
+    interest:[]
   };
-
-  const[data,setData]=React.useState({email: "eve.holt@reqres.in",password: "pistol"})
   const userData = useSelector((state)=>state.User)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    dispatch(registerUser(data))
+  
+  const handleSubmit = (values) => {
+   if(values){
+    const data = {
+      firstName:values?.firstName,
+      lastName:values?.lastName,
+      email:values?.email,
+      password:values?.password,
+      terms:values?.terms,
+      interest:values?.interest
+    }
+   dispatch(registerUser(data))
+   }
+   else{
+    alert("please fill the data")
+   }
   };
- console.log(userData)
+
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: handleSubmit
+  });
+ 
+  React.useEffect(()=>{
+  if(userData.token){
+    navigate("/")
+  }
+  },[userData.token])
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -62,11 +101,7 @@ export const Signup =() =>{
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Formik
-           initialValues={initialValues}
-           validationSchema={validationSchema}
-           onSubmit={handleSubmit}>
-            {({ isSubmitting, errors, touched })=>(<Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+         <Box component="form" noValidate onSubmit={formik.handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -76,9 +111,13 @@ export const Signup =() =>{
                   fullWidth
                   id="firstName"
                   label="First Name"
+                  onChange={formik.handleChange}
+                  value = {formik.values.flexDirection}
+                  onBlur={formik.handleBlur}
                   autoFocus
+                  helperText={formik.touched.firstName && formik.errors.firstName ?formik.errors.firstName: null}
+                  error={formik.touched.firstName && formik.errors.firstName?true:false}
                 />
-                  <ErrorMessage name="firstName" />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -87,9 +126,14 @@ export const Signup =() =>{
                   id="lastName"
                   label="Last Name"
                   name="lastName"
+                  onChange={formik.handleChange}
+                  value = {formik.values.lastName}
+                  onBlur={formik.handleBlur}
                   autoComplete="family-name"
+                  helperText={formik.touched.lastName && formik.errors.lastName ?formik.errors.lastName: null}
+                  error={formik.touched.lastName && formik.errors.lastName?true:false}
                 />
-                  <ErrorMessage name="lastName" />
+                 
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -98,9 +142,13 @@ export const Signup =() =>{
                   id="email"
                   label="Email Address"
                   name="email"
+                  onChange={formik.handleChange}
+                  value = {formik.values.email}
+                  onBlur={formik.handleBlur}
                   autoComplete="email"
+                  helperText={formik.touched.email && formik.errors.email ?formik.errors.email: null}
+                  error={formik.touched.email && formik.errors.email?true:false}
                 />
-                  <ErrorMessage name="email" />
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -110,15 +158,45 @@ export const Signup =() =>{
                   label="Password"
                   type="password"
                   id="password"
+                  onChange={formik.handleChange}
+                  value = {formik.values.password}
+                  onBlur={formik.handleBlur}
                   autoComplete="new-password"
+                  helperText={formik.touched.password && formik.errors.password ?formik.errors.password: null}
+                  error={formik.touched.password && formik.errors.password?true:false}
                 />
-                  <ErrorMessage name="password" />
+              </Grid>
+              <Grid item xs={12}>
+              <InputLabel id="selected-items-label">Select Interest</InputLabel>
+            <Select
+             fullWidth
+              multiple
+              labelId="selected-items-label"
+              id="selected-items"
+              name="interest"
+              value={formik.values.interest}
+              onBlur={formik.handleBlur}
+              onChange={(event) => {
+                formik.setFieldValue("interest", event.target.value);
+              }}
+              // helperText={formik.touched.interest && formik.errors.interest ?formik.errors.interest: null}
+              // error={formik.touched.interest && formik.errors.interest?true:false}
+            >
+              {names.map((item) => (
+                <MenuItem key={item} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+            {formik.touched.interest && formik.errors.interest ? <FormHelperText  error={formik.touched.interest && formik.errors.interest?true:false}>{formik.errors.interest}</FormHelperText>: null}
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
+                  control={<Checkbox value="allowExtraEmails" name="terms" color="primary" onChange={formik.handleChange} onBlur={formik.handleBlur} />}
                   label="I want to receive inspiration, marketing promotions and updates via email."
+                  name='terms'
                 />
+                {formik.touched.terms && formik.errors.terms ? <FormHelperText  error={formik.touched.terms && formik.errors.terms?true:false}>{formik.errors.terms}</FormHelperText>: null}
               </Grid>
             </Grid>
             <Button
@@ -136,8 +214,7 @@ export const Signup =() =>{
                 </Link>
               </Grid>
             </Grid>
-          </Box>)}
-          </Formik>
+          </Box>
         </Box>
       </Container>
     </ThemeProvider>
