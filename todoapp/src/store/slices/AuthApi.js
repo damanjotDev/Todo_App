@@ -11,3 +11,8 @@ export const loginUserApi = async (data) => {
 const response = await axios.post(`${BASE_URL}/api/login`, data);
 return response;
 };
+
+export const fetchUserApi = async () => {
+const response = await axios.get(`${BASE_URL}/api/unknown`);
+return response;
+};

@@ -65,7 +65,7 @@ export const Signup =() =>{
       terms:values?.terms,
       interest:values?.interest
     }
-   dispatch(registerUser(data))
+   dispatch(registerUser({data,navigate}))
    }
    else{
     alert("please fill the data")
@@ -77,12 +77,7 @@ export const Signup =() =>{
     validationSchema: validationSchema,
     onSubmit: handleSubmit
   });
- 
-  React.useEffect(()=>{
-  if(userData.token){
-    navigate("/")
-  }
-  },[userData.token])
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">

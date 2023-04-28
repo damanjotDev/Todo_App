@@ -48,7 +48,7 @@ export const Login =() =>{
       password:values?.password,
       terms:values?.terms,
     }
-   dispatch(loginUser(data))
+   dispatch(loginUser({data,navigate}))
    }
    else{
     alert("please fill the data")
@@ -60,12 +60,7 @@ export const Login =() =>{
     validationSchema: validationSchema,
     onSubmit: handleSubmit
   });
-  React.useEffect(()=>{
-  if(userData.token){
-    console.log("working")
-    navigate("/")
-  }
-  },[userData.token])
+ 
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
