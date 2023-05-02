@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { LogoutUser, fetchUser } from '../store/slices/AuthActions';
 import { useDispatch, useSelector } from 'react-redux';
+import { useGetUsersQuery } from '../store/slices/AuthApi';
+
 
 
 export const Homepage=()=>{
@@ -10,11 +12,8 @@ export const Homepage=()=>{
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    console.log(userData)
-
-    React.useEffect(()=>{
-    dispatch(fetchUser())
-    },[])
+    const{data}= useGetUsersQuery()
+    console.log(users)
 
     React.useEffect(()=>{
     setUsers(userData.allUsers)
@@ -26,7 +25,7 @@ export const Homepage=()=>{
     <h1 onClick={()=>dispatch(LogoutUser(navigate))}>Logout</h1>
     </div>
     <div style={{width:'90%',margin:"auto"}}>
-    {users.length?users.map(({id,name,color})=><h1 key={id} style={{color:color}}>{name}</h1>):"No Result Found!"}
+    {users.data?.length?users.data.map(({id,name,color})=><h1 key={id} style={{color:color}}>{name}</h1>):"No Result Found!"}
     </div>
    
     </>)
