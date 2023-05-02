@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchUserApi, loginUserApi, registerUserApi } from './AuthApi';
 import Cookies from 'js-cookie';
+import { fetchUserApi, loginUserApi, registerUserApi } from '../Api';
 
 export const registerUser = createAsyncThunk(
 'user/register',

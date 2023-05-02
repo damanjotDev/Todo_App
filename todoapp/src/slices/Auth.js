@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
-import { LogoutUser, fetchUser, loginUser, registerUser } from "./AuthActions";
-import { useGetUsersQuery, userApi } from "./AuthApi";
+import { LogoutUser, fetchUser, loginUser, registerUser } from "../actions/AuthActions";
+
 
 
 const userSlice =  createSlice({
@@ -48,15 +48,15 @@ const userSlice =  createSlice({
         state.isLoading = false;
         state.error = true;
         })
-        .addMatcher(userApi.endpoints.getUsers.matchPending, (state) => {
+        .addCase(fetchUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
         })
-        .addMatcher(userApi.endpoints.getUsers.matchFulfilled, (state, action) => {
+        .addCase(fetchUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.allUsers = action.payload;
         })
-        .addMatcher(userApi.endpoints.getUsers.matchRejected, (state, action) => {
+        .addCase(fetchUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = true;
         })

@@ -1,10 +1,11 @@
 import React from 'react';
 import Cookies from 'js-cookie'
 import { Route,Navigate, Routes, useNavigate,} from "react-router-dom";
-import { Login } from './Login';
-import { Signup } from './Signup';
-import { Homepage } from './HomePage';
-import { PrivateRoute } from './PrivateRoute';
+import { Login } from '../Auth/Login';
+import { Signup } from '../Auth/Signup';
+import { Homepage } from '../Dashboard/HomePage';
+import { PrivateRoute } from '../PrivateRoute/PrivateRoute';
+
 
 const AllRoutes = () => {
   const navigate = useNavigate()

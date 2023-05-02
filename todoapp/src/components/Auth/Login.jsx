@@ -14,7 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Formik, useFormik } from 'formik';                               
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser, registerUser } from '../store/slices/AuthActions';
+import { loginUser, registerUser } from '../../actions/AuthActions';
 import { Navigate,Link, useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
 import { FormHelperText } from '@mui/material';

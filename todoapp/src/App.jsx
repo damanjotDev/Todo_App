@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import AllRoutes from './components/AllRoutes'
+import AllRoutes from './components/AllRoutes/AllRoutes'
 
 
 function App() {

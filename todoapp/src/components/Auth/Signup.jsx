@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';                        
 import { useDispatch, useSelector } from 'react-redux';
-import { registerUser } from '../store/slices/AuthActions';
+import { registerUser } from '../../actions/AuthActions';
 import { Navigate,Link, useNavigate } from 'react-router-dom';
 import { useFormik} from 'formik';
 import * as Yup from "yup";
@@ -42,14 +42,7 @@ const names = [
 const theme = createTheme();
 
 export const Signup =() =>{
-  const initialValues = {
-    firstName: "",
-    lastName:"",
-    email: "",
-    password: "",
-    terms:false,
-    interest:[]
-  };
+  
   const userData = useSelector((state)=>state.User)
   const dispatch = useDispatch()
   const navigate = useNavigate()
