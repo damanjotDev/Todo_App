@@ -11,7 +11,7 @@ export const Homepage=()=>{
     const[users,setUsers]=React.useState(userData.allUsers)
     const navigate = useNavigate()
     const dispatch = useDispatch()
-     console.log(userData)
+   
     React.useEffect(()=>{
     setUsers(userData.allUsers)
     },[userData.allUsers])

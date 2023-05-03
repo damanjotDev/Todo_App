@@ -4,27 +4,23 @@ import { Box, styled } from '@mui/material';
 import SimpleForm from './SimpleForm';
 import StepperForm from './StepperForm';
 import SimpleCard from '../components/SimpleCard';
+import Breadcrumb from '../components/Breadcrumb';
 
-const Container = styled('div')(({ theme }) => ({
-  margin: '30px',
-  [theme.breakpoints.down('sm')]: { margin: '16px' },
-  '& .breadcrumb': {
-    marginBottom: '30px',
-    [theme.breakpoints.down('sm')]: { marginBottom: '16px' }
-  }
+const Container = styled("div")(({ theme }) => ({
+  margin: "30px",
+  [theme.breakpoints.down("sm")]: { margin: "16px" },
+  "& .breadcrumb": {
+    marginBottom: "30px",
+    [theme.breakpoints.down("sm")]: { marginBottom: "16px" },
+  },
 }));
 
 const AppForm = () => {
   return (
     <Container>
-
       <Stack spacing={3}>
         <SimpleCard title="Simple Form">
           <SimpleForm />
-        </SimpleCard>
-
-        <SimpleCard title="stepper form">
-          <StepperForm />
         </SimpleCard>
       </Stack>
     </Container>

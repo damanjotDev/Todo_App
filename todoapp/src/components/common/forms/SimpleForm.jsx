@@ -1,10 +1,13 @@
-import { DatePicker } from "@mui/lab";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import {
+  Box,
   Button,
   Checkbox,
+  Container,
   FormControlLabel,
+  FormHelperText,
   Grid,
   Icon,
   Radio,
@@ -17,55 +20,45 @@ import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { Span } from "../TypoGraphy/Typography";
 import { useFormik} from 'formik';
 import * as Yup from "yup";
+import { addUserFormValidationSchema } from "../../../validations/formValidations";
 
-const validationSchema = Yup.object({
-    username: Yup.string().required("firstName is required").min(4,'Username must be at least 4 characters long').max(9,'Username not be 4 characters long').matches(/^\S*$/, 'Username must not contain spaces'),
-    firstName: Yup.string().required("firstName is required").max(50,"first name is too long!").matches(/^\S*$/, 'Username must not contain spaces'),
-    email: Yup.string().email("Invalid email address").required("Email is required").matches(/^[^\s@+<>()[\]\\.,;:\s]+@\S+$/, 'Invalid email'),
-    creditCard:Yup.string().required("Credit card number is required").min(16,'Minimum length should be 16').max(16,'Maximum length should be 16')
-    
-    // terms: Yup.boolean()
-    // .oneOf([true], 'Please accept the terms and conditions')
-    // .required('Please accept the terms and conditions'),
-    // interest: Yup.array()
-    // .of(Yup.string().required('Interest is required'))
-    // .min(1, 'At least one Interest is required')
-  });
-  
-  const initialValues = {
-    username: "",
-    mobile:"",
-    password: "",
-    confirmPassword: "",
-    gender:"",
-    terms:""
-  };
 
 const SimpleForm = () => {
   const [state, setState] = useState({ date: new Date() });
+  const initialValues = {
+    email: "",
+    firstName:"",
+    creditCard:"",
+    username:"",
+    mobile:"",
+    password:"",
+    confirmPassword:"",
+    terms:false,
+    date:new Date()
+  };
     
   const handleSubmit = (values) => {
-    // console.log("submitted");
-    // console.log(event);
-    console.log(values)
+    if(values){
+      console.log(values)
+    }
+    else{
+      console.log("api not call")
+    }
   };
-
-  
-
-//   const handleDateChange = (date) => setState({ ...state, date });
-
+  const handleDateChange = (date) => setState({ ...state, date });
   const formik = useFormik({
     initialValues: initialValues,
-    validationSchema: validationSchema,
+    validationSchema: addUserFormValidationSchema,
     onSubmit: handleSubmit
   });
- 
+
 
   return (
-    <div>
-        <Grid container spacing={6} onSubmit={formik.handleSubmit}>
-          <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
+    <Box component="form" noValidate onSubmit={formik.handleSubmit} sx={{ mt: 3 }}>
+        <Grid container spacing={2}>
+          <Grid item lg={6} md={6} sm={12} xs={12}>
             <TextField
+             fullWidth
               type="text"
               name="username"
               id="standard-basic"
@@ -77,8 +70,10 @@ const SimpleForm = () => {
               helperText={formik.touched.username && formik.errors.username ?formik.errors.username: null}
               error={formik.touched.username && formik.errors.username?true:false}
             />
-
+          </Grid>
+          <Grid item lg={6} md={6} sm={12} xs={12}>
             <TextField
+              fullWidth
               type="text"
               name="firstName"
               label="First Name"
@@ -88,23 +83,27 @@ const SimpleForm = () => {
               helperText={formik.touched.firstName && formik.errors.firstName ?formik.errors.firstName: null}
               error={formik.touched.firstName && formik.errors.firstName?true:false}
             />
-
+          </Grid>
+          <Grid item lg={6} md={6} sm={12} xs={12}>
             <TextField
-              type="email"
-              name="email"
-              label="Email"
-              onChange={formik.handleChange}
-              value = {formik.values.email}
-              onBlur={formik.handleBlur}
-              
-              helperText={formik.touched.email && formik.errors.email ?formik.errors.email: null}
-              error={formik.touched.email && formik.errors.email?true:false}
+             fullWidth
+             id="email"
+             label="Email Address"
+             name="email"
+             onChange={formik.handleChange}
+             value = {formik.values.email}
+             onBlur={formik.handleBlur}
+             helperText={formik.touched.email && formik.errors.email ?formik.errors.email: null}
+             error={formik.touched.email && formik.errors.email?true:false}
             />
-
-            {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+          </Grid>
+          <Grid item lg={6} md={6} sm={12} xs={12} >
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-                value={date}
-                onChange={handleDateChange}
+                name="date"
+                value={formik.values.date}
+                onChange={(date)=>formik.setFieldValue("date",date)}
+                onBlur={formik.handleBlur}
                 renderInput={(props) => (
                   <TextField
                     {...props}
@@ -114,91 +113,77 @@ const SimpleForm = () => {
                   />
                 )}
               />
-            </LocalizationProvider> */}
-
+            </LocalizationProvider>
+          </Grid>
+           
+           <Grid item lg={6} md={6} sm={12} xs={12}>
             <TextField
-              sx={{ mb: 4 }}
+              fullWidth
               type="number"
               name="creditCard"
               label="Credit Card"
               onChange={formik.handleChange}
               value = {formik.values.creditCard}
               onBlur={formik.handleBlur}
-              
               helperText={formik.touched.creditCard && formik.errors.creditCard ?formik.errors.creditCard: null}
               error={formik.touched.creditCard && formik.errors.creditCard?true:false}
             />
           </Grid>
-
-          {/* <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
-            <TextField
-              type="text"
+           <Grid item lg={6} md={6} sm={12} xs={12}>
+           <TextField
+              fullWidth
+              type="number"
               name="mobile"
-              value={mobile || ""}
               label="Mobile Nubmer"
-              onChange={handleChange}
-              validators={["required"]}
-              errorMessages={["this field is required"]}
+              onChange={formik.handleChange}
+              value = {formik.values.mobile}
+              onBlur={formik.handleBlur}
+              helperText={formik.touched.mobile && formik.errors.mobile ?formik.errors.mobile: null}
+              error={formik.touched.mobile&& formik.errors.mobile?true:false}
             />
-            <TextField
+           </Grid>
+           <Grid item lg={6} md={6} sm={12} xs={12}>
+           <TextField
+             fullWidth
               name="password"
               type="password"
               label="Password"
-              value={password || ""}
-              onChange={handleChange}
-              validators={["required"]}
-              errorMessages={["this field is required"]}
+              onChange={formik.handleChange}
+              value = {formik.values.password}
+              onBlur={formik.handleBlur}
+              helperText={formik.touched.password && formik.errors.password ?formik.errors.password: null}
+              error={formik.touched.password&& formik.errors.password?true:false}
             />
-            <TextField
+           </Grid>
+           <Grid item lg={6} md={6} sm={12} xs={12}>
+           <TextField
+              fullWidth
               type="password"
               name="confirmPassword"
-              onChange={handleChange}
               label="Confirm Password"
-              value={confirmPassword || ""}
-              validators={["required", "isPasswordMatch"]}
-              errorMessages={["this field is required", "password didn't match"]}
+              onChange={formik.handleChange}
+              value = {formik.values.confirmPassword}
+              onBlur={formik.handleBlur}
+              helperText={formik.touched.confirmPassword && formik.errors.confirmPassword?formik.errors.confirmPassword: null}
+              error={formik.touched.confirmPassword&& formik.errors.confirmPassword?true:false}
             />
-            <RadioGroup
-              row
-              name="gender"
-              sx={{ mb: 2 }}
-              value={gender || ""}
-              onChange={handleChange}
-            >
-              <FormControlLabel
-                value="Male"
-                label="Male"
-                labelPlacement="end"
-                control={<Radio color="secondary" />}
-              />
-
-              <FormControlLabel
-                value="Female"
-                label="Female"
-                labelPlacement="end"
-                control={<Radio color="secondary" />}
-              />
-
-              <FormControlLabel
-                value="Others"
-                label="Others"
-                labelPlacement="end"
-                control={<Radio color="secondary" />}
-              />
-            </RadioGroup>
-
-            <FormControlLabel
+           </Grid>
+           <Grid item lg={6} md={6} sm={12} xs={12}>
+           <FormControlLabel
               control={<Checkbox  />}
               label="I have read and agree to the terms of service."
               name='terms'
+              onChange={formik.handleChange} onBlur={formik.handleBlur} 
             />
-          </Grid> */}
+              {formik.touched.terms && formik.errors.terms ? <FormHelperText  error={formik.touched.terms && formik.errors.terms?true:false}>{formik.errors.terms}</FormHelperText>: null}
+           </Grid>
+    
         </Grid>
 
-        <Button color="primary" variant="contained" type="submit">
+        <Button color="primary" variant="contained" type="submit" >
           <Span sx={{textTransform: "capitalize" }}>Submit</Span>
         </Button>
-    </div>
+    </Box>
   );
 };
 
